@@ -252,14 +252,14 @@ struct stm32_mac_regs {
 /*
  * SYSCFG register map
  */
-struct stm32_syscfg_regs {
-	u32	memrmp;		/* Memory remap				      */
-	u32	pmc;		/* Peripheral mode configuration	      */
-	u32	exticr[4];	/* External interrupt configuration	      */
-	u32	rsv0[2];
-	u32	cmpcr;		/* Compensation cell control		      */
-};
-#define STM32_SYSCFG			((volatile struct stm32_syscfg_regs *) \
+//struct stm32_syscfg_regs {
+//	u32	memrmp;		/* Memory remap				      */
+//	u32	pmc;		/* Peripheral mode configuration	      */
+//	u32	exticr[4];	/* External interrupt configuration	      */
+//	u32	rsv0[2];
+//	u32	cmpcr;		/* Compensation cell control		      */
+//};
+//#define STM32_SYSCFG			((volatile struct stm32_syscfg_regs *) \
 					STM32_SYSCFG_BASE)
 
 /*
@@ -328,26 +328,26 @@ struct stm_eth_dev {
  * ETH_MII_RX_ER --------------------> PI10
  */
 static struct stm32f2_gpio_dsc mac_gpio[] = {
-	{STM32F2_GPIO_PORT_A, 1},
-	{STM32F2_GPIO_PORT_A, 2},
-	{STM32F2_GPIO_PORT_A, 7},
+	{STM32F2_GPIO_PORT_A, STM32F2_GPIO_PIN_1, STM32F2_GPIO_ROLE_ETHERNET},
+	{STM32F2_GPIO_PORT_A, STM32F2_GPIO_PIN_2, STM32F2_GPIO_ROLE_ETHERNET},
+	{STM32F2_GPIO_PORT_A, STM32F2_GPIO_PIN_7, STM32F2_GPIO_ROLE_ETHERNET},
 
 #ifndef CONFIG_STM32_ETH_RMII
 	{STM32F2_GPIO_PORT_B, 5},
 	{STM32F2_GPIO_PORT_B, 8},
 #endif
 
-	{STM32F2_GPIO_PORT_C, 1},
+	{STM32F2_GPIO_PORT_C, 1, STM32F2_GPIO_ROLE_ETHERNET},
 #ifndef CONFIG_STM32_ETH_RMII
 	{STM32F2_GPIO_PORT_C, 2},
 	{STM32F2_GPIO_PORT_C, 3},
 #endif
-	{STM32F2_GPIO_PORT_C, 4},
-	{STM32F2_GPIO_PORT_C, 5},
+	{STM32F2_GPIO_PORT_C, STM32F2_GPIO_PIN_4, STM32F2_GPIO_ROLE_ETHERNET},
+	{STM32F2_GPIO_PORT_C, STM32F2_GPIO_PIN_5, STM32F2_GPIO_ROLE_ETHERNET},
 
-	{STM32F2_GPIO_PORT_G, 11},
-	{STM32F2_GPIO_PORT_G, 13},
-	{STM32F2_GPIO_PORT_G, 14},
+	{STM32F2_GPIO_PORT_G, STM32F2_GPIO_PIN_11, STM32F2_GPIO_ROLE_ETHERNET},
+	{STM32F2_GPIO_PORT_G, STM32F2_GPIO_PIN_13, STM32F2_GPIO_ROLE_ETHERNET},
+	{STM32F2_GPIO_PORT_G, STM32F2_GPIO_PIN_14, STM32F2_GPIO_ROLE_ETHERNET},
 
 #ifndef CONFIG_STM32_ETH_RMII
 	{STM32F2_GPIO_PORT_H, 2},
@@ -821,8 +821,7 @@ static s32 stm_mac_gpio_init(struct stm_eth_dev *mac)
 	 * Set GPIOs Alternative function
 	 */
 	for (i = 0; i < sizeof(mac_gpio)/sizeof(mac_gpio[0]); i++) {
-		rv = stm32f2_gpio_config(&mac_gpio[i],
-					 STM32F2_GPIO_ROLE_ETHERNET);
+		rv = stm32f2_gpio_config(&mac_gpio[i]);
 		if (rv != 0)
 			goto out;
 	}
